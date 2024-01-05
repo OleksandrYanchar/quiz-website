@@ -21,7 +21,7 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-
+    'users',
 ]
 
 THIRD_PARTY = []
@@ -55,6 +55,8 @@ MIDDLEWARE = [
 ]
 
 # ACCOUNTS
+AUTH_USER_MODEL = "users.User"
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -96,9 +98,8 @@ MEDIA_ROOT = os.path.join(STATIC_DIR, "media")
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-MEDIA_URL = "/media/"
+MEDIA_URL = (os.path.join(BASE_DIR, "media/"))
 
-MEDIA_ROOT = BASE_DIR / "static/media"
 
 
 
