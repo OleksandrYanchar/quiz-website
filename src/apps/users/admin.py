@@ -6,7 +6,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("username",)}
         
     list_display = ('username', 'slug', 'bio', 'display_image','email')
-    list_filter = ("username",'date_changed' )
+    list_filter = ("username",'date_changed','is_active' )
     search_fields = ("username",'slug','id')
     readonly_fields = ('display_image', 'date_added','date_changed')
     
