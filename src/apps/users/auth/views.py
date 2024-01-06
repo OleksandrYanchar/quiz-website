@@ -2,15 +2,17 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.views import APIView    
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from users.models import User
-from .serializers import UserAuthSerializer
+from .serializers import ChangePasswordSerializer, UserAuthSerializer
 from .tokens import EmailVerificationTokenGenerator, create_jwt_pair_for_user
-
+from rest_framework.generics import UpdateAPIView   
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated   
 
 class UserRegistrationView(APIView):
     def post(self, request: Request):
@@ -50,10 +52,10 @@ class ActivateView(APIView):
         user = User.objects.get(pk=unique_id)
 
         if user and EmailVerificationTokenGenerator().check_token(user, token):
-            user.is_active = True
+            user.is_activeted = True
             user.save()
             return Response({"message": "Account activated", "status": status.HTTP_200_OK})
-        
+            
         return Response({"message": "Account activation failed", "status": status.HTTP_400_BAD_REQUEST})
 
 class UserLoginView(APIView):
@@ -73,3 +75,18 @@ class UserLoginView(APIView):
             )
         else:
             return Response(data={"message": "Invalid username or password"})
+
+class ChangePasswordView(UpdateAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = ChangePasswordSerializer
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # if using drf authtoken, create a new token 
+        if hasattr(user, 'auth_token'):
+            user.auth_token.delete()
+        token, created = Token.objects.get_or_create(user=user)
+        # return new token
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
