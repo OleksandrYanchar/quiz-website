@@ -1,7 +1,7 @@
 {% autoescape off %}
 
 Hi,{{user.username}} 
-thx 4 registrtation 
+thank you for registrtation at {{domain}}
 
 Please verify ur account by clickink link below
 
@@ -10,6 +10,3 @@ http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}
 {% endautoescape %} 
 
 
-{% comment %} { "username": "yaa", 
-"email": "contact.oleksandryanchar@gmail.com",
- "password": "FDLJHN34bKNsdfdfe" } {% endcomment %}
