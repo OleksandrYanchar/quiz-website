@@ -3,25 +3,30 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView    
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.encoding import force_bytes, force_str
+from django.utils.encoding import  force_str
+from .services import _send_email_verification
 from users.models import User
 from .serializers import ChangePasswordSerializer, UserAuthSerializer
 from .tokens import EmailVerificationTokenGenerator, create_jwt_pair_for_user
 from rest_framework.generics import UpdateAPIView   
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated   
+from django.utils.http import  urlsafe_base64_decode
+
+
+from .services import _send_email_verification  
 
 class UserRegistrationView(APIView):
     def post(self, request: Request):
         serializer = UserAuthSerializer(data=request.data)
+
         if serializer.is_valid():
             user = serializer.save()
             user.set_password(request.data.get("password"))
+            template = 'email_verification.html'
+            _send_email_verification(request, user, template)  
             user.save()
-            self._send_email_verification(user)
+
             return Response(
                 data={
                     "user_id": str(user.id),
@@ -29,22 +34,7 @@ class UserRegistrationView(APIView):
                 },
                 status=status.HTTP_201_CREATED,
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def _send_email_verification(self, user: User):
-        current_site = get_current_site(self.request)
-        subject = 'Activate Your Account'
-        body = render_to_string(
-            'email_verification.html',
-            {
-                "user": user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': EmailVerificationTokenGenerator().make_token(user),
-            }
-        )
-        user.email_user(subject=subject, message=body)
-
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class ActivateView(APIView):
     def get(self, request, uidb64, token):
