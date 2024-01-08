@@ -15,7 +15,7 @@ def create_jwt_pair_for_user(user):
 
     return tokens
 
-class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
+class EmailTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         return (
                 str(user.is_active) + str(user.pk) + str(timestamp)
