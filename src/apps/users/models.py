@@ -11,4 +11,4 @@ class User(AbstractUser):
     slug = models.SlugField(max_length=256)
     date_added = models.DateTimeField(auto_now=True)
     date_changed = models.DateTimeField(auto_now_add=True)
-    is_activeted = models.BooleanField(default=False)
+    is_activated = models.BooleanField(default=False)

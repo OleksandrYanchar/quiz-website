@@ -40,7 +40,7 @@ class ActivateView(APIView):
         user = User.objects.get(pk=unique_id)
 
         if user and EmailTokenGenerator().check_token(user, token):
-            user.is_activeted = True
+            user.is_activated = True
             user.save()
             return Response({"message": "Account activated", "status": status.HTTP_200_OK})
             
