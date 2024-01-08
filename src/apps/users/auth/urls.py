@@ -13,8 +13,9 @@ urlpatterns = [
     path("sign-up/", views.UserRegistrationView.as_view(), name="sign-up"),
     path("log-in/", views.UserLoginView.as_view(), name="log-in"), 
     path('email-verification/<str:uidb64>/<str:token>/', views.ActivateView.as_view(), name='email-verification'),
-    path('email-verification/<str:uidb64>/<str:token>/', views.ActivateView.as_view(), name='email-verification'),
-    path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),    
+    path('password-reset/<str:uidb64>/<str:token>/', views.ResetPasswordView.as_view(), name='reset-password'),
+    path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),
+        
     
     path("jwt/create/", MyTokenObtainPairView.as_view(), name="jwt-create"),
     path("jwt/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
