@@ -27,6 +27,7 @@ class UserAuthSerializer(serializers.ModelSerializer):
         except ValidationError as e:
             raise ValidationError(e.messages)
         return value
+    
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(max_length=128, write_only=True, required=True)
     new_password1 = serializers.CharField(max_length=128, write_only=True, required=True)
@@ -52,6 +53,27 @@ class ChangePasswordSerializer(serializers.Serializer):
     def save(self, **kwargs):
         password = self.validated_data['new_password1']
         user = self.context['request'].user
+        user.set_password(password)
+        user.save()
+        return user
+    
+class ResetUserPasswordSerializer(serializers.Serializer):
+    new_password1 = serializers.CharField(max_length=128, write_only=True, required=True)
+    new_password2 = serializers.CharField(max_length=128, write_only=True, required=True)
+
+    def validate(self, data):
+        if data['new_password1'] != data['new_password2']:
+            raise serializers.ValidationError({'new_password2': 'The two password fields didn\'t match.'})
+
+        try:
+            password_validation.validate_password(data['new_password1'], self.context['request'].user)
+        except ValidationError as e:
+            raise serializers.ValidationError({'new_password1': e.messages})
+
+        return data
+
+    def save(self, user, **kwargs):
+        password = self.validated_data['new_password1']
         user.set_password(password)
         user.save()
         return user
