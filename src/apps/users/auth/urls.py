@@ -14,7 +14,7 @@ urlpatterns = [
     path("log-in/", views.UserLoginView.as_view(), name="log-in"), 
     path('email-verification/<str:uidb64>/<str:token>/', views.ActivateView.as_view(), name='email-verification'),
     path('password-reset/', views.CheckResetUserPasswordEmailView.as_view(), name='reset-password'),
-    path('password-reset/<str:uidb64>/<str:token>/', views.ResetPasswordView.as_view(),name='reset-user-password'),
+    path('password-reset-user/<str:uidb64>/<str:token>/', views.ResetPasswordView.as_view(),name='reset-user-password'),
     path('change-password/', views.ChangePasswordView.as_view(), name='change-password'),
         
     
