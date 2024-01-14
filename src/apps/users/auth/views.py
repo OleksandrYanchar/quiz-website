@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -6,7 +7,7 @@ from rest_framework.views import APIView
 from django.utils.encoding import  force_str
 from .services import _send_email
 from users.models import User
-from .serializers import ChangePasswordSerializer, ResetUserPasswordSerializer, UserAuthSerializer
+from .serializers import ChangePasswordSerializer, ResetUserPasswordSerializer, UserAuthSerializer, CheckResetUserPasswordEmailSerializer
 from .tokens import EmailTokenGenerator, create_jwt_pair_for_user
 from rest_framework.generics import UpdateAPIView   
 from rest_framework.authtoken.models import Token
@@ -74,7 +75,21 @@ class ChangePasswordView(UpdateAPIView):
         user = serializer.save()
 
         return Response({'message':"password changed" }, status=status.HTTP_200_OK)
+    
+class CheckResetUserPasswordEmailView(UpdateAPIView):
+    serializer_class = CheckResetUserPasswordEmailSerializer
 
+    def put(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get('email')
+            if email:
+                user = get_object_or_404(User, email=email)
+                _send_email(request, user, 'password-reset.html', 'Reset Your Password')
+                return Response({'message': 'Reset password email sent successfully'}, status=status.HTTP_200_OK)
+            return Response({'error': 'Email not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class ResetPasswordView(UpdateAPIView):
     serializer_class = ResetUserPasswordSerializer
 
