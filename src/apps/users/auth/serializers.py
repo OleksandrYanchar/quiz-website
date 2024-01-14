@@ -57,6 +57,10 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
         return user
     
+class CheckResetUserPasswordEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
 class ResetUserPasswordSerializer(serializers.Serializer):
     new_password1 = serializers.CharField(max_length=128, write_only=True, required=True)
     new_password2 = serializers.CharField(max_length=128, write_only=True, required=True)
