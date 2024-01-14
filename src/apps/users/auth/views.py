@@ -36,17 +36,20 @@ class UserRegistrationView(APIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class ActivateView(APIView):
-    def get(self,uidb64, token):
-        unique_id = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=unique_id)
+    def get(self, request, uidb64, token):
+        try:
+            unique_id = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=unique_id)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"message": "Invalid activation link", "status": status.HTTP_400_BAD_REQUEST})
 
         if user and EmailTokenGenerator().check_token(user, token):
             user.is_activated = True
             user.save()
             return Response({"message": "Account activated", "status": status.HTTP_200_OK})
-            
-        return Response({"message": "Account activation failed", "status": status.HTTP_400_BAD_REQUEST})
 
+        return Response({"message": "Account activation failed", "status": status.HTTP_400_BAD_REQUEST})
+    
 class UserLoginView(APIView):
     def post(self, request: Request):
         username = request.data.get("username")
