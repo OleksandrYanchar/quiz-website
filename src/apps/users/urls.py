@@ -2,9 +2,7 @@ from django.urls import include, path
 
 from . import views
 from users.auth.views import ActivateView, ChangePasswordView
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-)
+
 
 urlpatterns = [
     path('all/', views.UserListView.as_view(), name="users"),
