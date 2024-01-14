@@ -8,7 +8,6 @@ from .tokens import EmailTokenGenerator
 
 def _send_email(request, user, template, subject):
     current_site = get_current_site(request)
-    subject = 'Activate Your Account'
     body = render_to_string(
         template,
         {
