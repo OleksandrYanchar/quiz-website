@@ -119,5 +119,23 @@ class ResetPasswordView(UpdateAPIView):
             return Response(data={"message": "Error", "status": status.HTTP_400_BAD_REQUEST})
 
 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        request.authenticator.logout(request)
+        return Response({'detail': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+
+
+class DeleteUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response({'detail': 'User successfully deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
+
 def auth(request):
     return render(request, 'auth.html')
+
