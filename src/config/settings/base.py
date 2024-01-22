@@ -19,6 +19,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
 ]
 
 LOCAL_APPS = [
@@ -31,8 +32,9 @@ THIRD_PARTY = [
         'rest_framework.authtoken',
         'rest_framework_simplejwt', 
         'rest_framework_simplejwt.token_blacklist', 
+    
         'social_django',
-]
+    ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY + LOCAL_APPS
 
@@ -60,6 +62,9 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    
+    'allauth.account.middleware.AccountMiddleware',
+    
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -70,9 +75,9 @@ MIDDLEWARE = [
 AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.google.GoogleOAuth2',
     
-    'django.contrib.auth.backends.ModelBackend',
 )
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -219,10 +224,8 @@ EMAIL_USE_TLS = True
 
 #GOOGLE AUTH
 
-SOCIAL_AUTH_REQUIRE_POST = True
+SITE_ID = 1
 
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY =  os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET =  os.getenv('GOOGLE_OAUTH2_CLIENT_SECRET')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
