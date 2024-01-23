@@ -77,6 +77,7 @@ AUTH_USER_MODEL = "users.User"
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
     
 )
 
@@ -229,3 +230,8 @@ SITE_ID = 1
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY =  os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET =  os.getenv('GOOGLE_OAUTH2_CLIENT_SECRET')
+
+#FACEBOOK AUTH
+SOCIAL_AUTH_FACEBOOK_KEY = os.getenv('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET')
+SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.10'
