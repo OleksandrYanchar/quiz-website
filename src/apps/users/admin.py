@@ -5,13 +5,14 @@ from django.utils.safestring import mark_safe
 class CustomUserAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("username",)}
         
-    list_display = ('username', 'slug', 'bio', 'display_image',)
-    list_filter = ("username",'date_changed' )
-    search_fields = ("username",'slug','id')
+    list_display = ('username', 'slug', 'bio', 'display_image','email', 'is_staff')
+    list_filter = ("username",'date_changed','is_activated', 'is_staff' )
+    search_fields = ("username",'slug','id', 'is_activated', 'is_staff')
     readonly_fields = ('display_image', 'date_added','date_changed')
     
     fieldsets = (
         (None, {"fields": (("username", "slug"),)}),
+        (None, {"fields": (('email',"is_activated", 'is_staff'),)}),
         (None, {"fields": (("date_added", "date_changed"),)}),    
         (None, {"fields": ("bio", "picture", "display_image")}),
     )
