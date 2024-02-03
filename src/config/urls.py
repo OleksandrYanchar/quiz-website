@@ -4,10 +4,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+API_VERS = 'api/v1'
+
 
 urlpatterns = [
-    path('api/admin/', admin.site.urls),
-    path('api/', include('users.urls')),
+    path(f'{API_VERS}/admin/', admin.site.urls),
+    path(f'{API_VERS}/', include('users.urls')),
 ]
 
 

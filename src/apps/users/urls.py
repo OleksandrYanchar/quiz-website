@@ -8,6 +8,6 @@ urlpatterns = [
     path('all/', views.UserListView.as_view(), name="users"),
     path('', include('users.auth.urls')),
 
-    path('<str:pk>/',views.UserView.as_view(), name="profile"),
+    path('profile/<str:pk>/',views.UserView.as_view(), name="profile"),
 
 ]

@@ -19,6 +19,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
 ]
 
 LOCAL_APPS = [
@@ -31,8 +32,9 @@ THIRD_PARTY = [
         'rest_framework.authtoken',
         'rest_framework_simplejwt', 
         'rest_framework_simplejwt.token_blacklist', 
-        
-]
+    
+        'social_django',
+    ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY + LOCAL_APPS
 
@@ -60,6 +62,9 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    
+    'allauth.account.middleware.AccountMiddleware',
+    
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -68,6 +73,13 @@ MIDDLEWARE = [
 
 # ACCOUNTS
 AUTH_USER_MODEL = "users.User"
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,6 +108,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -141,11 +155,11 @@ CORS_ALLOW_ALL_ORGINS =True
 
 REST_FRAMEWORK = {
 
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    ],
     'DEFAULT_FILTER_BACKEND': (
         'django_filters.rest_framewirk.DjangoFiltersBackend'
     ),
@@ -208,3 +222,16 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 
 EMAIL_USE_TLS = True
+
+#GOOGLE AUTH
+
+SITE_ID = 1
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY =  os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET =  os.getenv('GOOGLE_OAUTH2_CLIENT_SECRET')
+
+#FACEBOOK AUTH
+SOCIAL_AUTH_FACEBOOK_KEY = os.getenv('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET')
+SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.10'
